@@ -6,18 +6,23 @@ import com.github.fabriciolfj.domain.entity.Category;
 import com.github.fabriciolfj.domain.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Slf4j
-@Path("category")
+@Path("categories")
+@ApplicationScoped
 @RequiredArgsConstructor
+@Produces("application/json")
+@Consumes("application/json")
 public class CategoryController {
 
     private final CategoryMapper categoryMapper;
@@ -35,7 +40,7 @@ public class CategoryController {
     }
 
     @POST
-    public Response create(@RequestBody final CategoryRequest request) {
+    public Response create(final CategoryRequest request) {
         final var category = categoryMapper.toEntity(request);
         log.info("Category created: {}", category);
         categoryService.save(category);
