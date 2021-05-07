@@ -1,4 +1,4 @@
-package com.github.fabriciolfj.api.dto;
+package com.github.fabriciolfj.api.product.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,4 +13,6 @@ public class ProductRequest {
 
     private String description;
     private BigDecimal price;
+    private String category;
+    private String tax;
 }

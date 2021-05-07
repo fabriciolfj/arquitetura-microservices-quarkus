@@ -1,7 +1,7 @@
-package com.github.fabriciolfj.api.controller;
+package com.github.fabriciolfj.api.product.controller;
 
-import com.github.fabriciolfj.api.dto.ProductRequest;
-import com.github.fabriciolfj.api.dto.ProductResponse;
+import com.github.fabriciolfj.api.product.dto.ProductRequest;
+import com.github.fabriciolfj.api.product.dto.ProductResponse;
 import com.github.fabriciolfj.domain.service.ProductService;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -32,7 +32,7 @@ public class ProductController {
 
     @POST
     public Response create(final ProductRequest request) {
-        productService.create(request);
+        productService.create(request, request.getCategory());
         return Response.status(201).build();
     }
 

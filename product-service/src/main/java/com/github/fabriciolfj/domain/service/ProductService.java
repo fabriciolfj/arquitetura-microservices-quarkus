@@ -1,14 +1,13 @@
 package com.github.fabriciolfj.domain.service;
 
-import com.github.fabriciolfj.api.dto.ProductRequest;
-import com.github.fabriciolfj.api.dto.ProductResponse;
-import com.github.fabriciolfj.api.mapper.ProductMapper;
+import com.github.fabriciolfj.api.product.dto.ProductRequest;
+import com.github.fabriciolfj.api.product.dto.ProductResponse;
+import com.github.fabriciolfj.api.product.mapper.ProductMapper;
 import com.github.fabriciolfj.domain.entity.Product;
 import lombok.RequiredArgsConstructor;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -21,7 +20,9 @@ import static java.util.Optional.of;
 public class ProductService {
 
     private final ProductMapper mapper;
+    private final CategoryService categoryService;
 
+    @Transactional(Transactional.TxType.NEVER)
     public List<ProductResponse> findAll() {
         final List<Product> products = Product.listAll();
 
@@ -32,15 +33,17 @@ public class ProductService {
         return products.stream().map(mapper::toResponse).collect(Collectors.toList());
     }
 
+    @Transactional(Transactional.TxType.NEVER)
     public ProductResponse findByCode(final String code) {
         final Product product = (Product) Product.find("code", code);
         return mapper.toResponse(product);
     }
 
-    @Transactional
-    public void create(final ProductRequest request) {
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void create(final ProductRequest request, final String decription) {
         of(mapper.toEntity(request))
                 .map(p -> {
+                    p.category = categoryService.findByDescription(decription);
                     p.code = UUID.randomUUID().toString();
                     Product.persist(p);
                     return p;
@@ -48,7 +51,7 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Fail to save product: " + request));
     }
 
-    @Transactional
+    @Transactional(Transactional.TxType.REQUIRED)
     public void update(final ProductRequest request, final String code) {
         final Product product = (Product) Product.find("code", code);
         of(product)
@@ -62,7 +65,7 @@ public class ProductService {
 
     }
 
-    @Transactional
+    @Transactional(Transactional.TxType.REQUIRED)
     public void delete(final String code) {
         final Product product = (Product) Product.find("code", code);
         Product.deleteById(product.id);

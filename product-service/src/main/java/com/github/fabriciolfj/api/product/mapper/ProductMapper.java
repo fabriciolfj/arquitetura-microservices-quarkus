@@ -1,7 +1,7 @@
-package com.github.fabriciolfj.api.mapper;
+package com.github.fabriciolfj.api.product.mapper;
 
-import com.github.fabriciolfj.api.dto.ProductRequest;
-import com.github.fabriciolfj.api.dto.ProductResponse;
+import com.github.fabriciolfj.api.product.dto.ProductRequest;
+import com.github.fabriciolfj.api.product.dto.ProductResponse;
 import com.github.fabriciolfj.domain.entity.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,5 +18,6 @@ public interface ProductMapper {
     @Mapping(target = "description", source = "description")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "code", ignore = true)
+    @Mapping(target = "category", ignore = true)
     Product toEntity(final ProductRequest request);
 }

@@ -1,4 +1,4 @@
-package com.github.fabriciolfj.api.dto;
+package com.github.fabriciolfj.api.product.dto;
 
 import lombok.Data;
 
