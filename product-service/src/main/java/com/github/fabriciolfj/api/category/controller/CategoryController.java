@@ -1,6 +1,7 @@
 package com.github.fabriciolfj.api.category.controller;
 
 import com.github.fabriciolfj.api.category.dto.CategoryRequest;
+import com.github.fabriciolfj.api.category.dto.CategoryResponse;
 import com.github.fabriciolfj.api.category.mapper.CategoryMapper;
 import com.github.fabriciolfj.domain.entity.Category;
 import com.github.fabriciolfj.domain.service.CategoryService;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -16,6 +18,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Path("categories")
@@ -29,18 +32,21 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GET
-    public List<Category> findAll() {
-        return categoryService.findAll();
+    public List<CategoryResponse> findAll() {
+        return categoryService.findAll()
+                .stream().map(categoryMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     @GET
-    @Path("description")
-    public Category findDescription(@PathParam("description") final String description) {
-        return categoryService.findByDescription(description);
+    @Path("{description}")
+    public CategoryResponse findDescription(@PathParam("description") final String description) {
+        final var category = categoryService.findByDescription(description);
+        return categoryMapper.toResponse(category);
     }
 
     @POST
-    public Response create(final CategoryRequest request) {
+    public Response create(@Valid final CategoryRequest request) {
         final var category = categoryMapper.toEntity(request);
         log.info("Category created: {}", category);
         categoryService.save(category);

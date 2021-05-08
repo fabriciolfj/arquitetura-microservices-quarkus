@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -20,6 +21,7 @@ import java.util.List;
 @Data
 @Table(name = "category")
 @Entity
+@NamedQuery(name = "Category.findDescription", query = "Select p From Category p where p.description = :parDescription")
 public class Category extends PanacheEntityBase {
 
     @Id

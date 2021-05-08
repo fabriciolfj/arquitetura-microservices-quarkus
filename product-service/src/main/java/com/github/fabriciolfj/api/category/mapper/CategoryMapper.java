@@ -1,6 +1,7 @@
 package com.github.fabriciolfj.api.category.mapper;
 
 import com.github.fabriciolfj.api.category.dto.CategoryRequest;
+import com.github.fabriciolfj.api.category.dto.CategoryResponse;
 import com.github.fabriciolfj.domain.entity.Category;
 import org.mapstruct.Mapper;
 
@@ -8,4 +9,6 @@ import org.mapstruct.Mapper;
 public interface CategoryMapper {
 
     Category toEntity(final CategoryRequest request);
+
+    CategoryResponse toResponse(final Category category);
 }

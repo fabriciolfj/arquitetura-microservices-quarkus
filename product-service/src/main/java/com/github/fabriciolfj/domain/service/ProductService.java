@@ -4,11 +4,11 @@ import com.github.fabriciolfj.api.product.dto.ProductRequest;
 import com.github.fabriciolfj.api.product.dto.ProductResponse;
 import com.github.fabriciolfj.api.product.mapper.ProductMapper;
 import com.github.fabriciolfj.domain.entity.Product;
+import com.github.fabriciolfj.domain.exceptions.ProductException;
 import lombok.RequiredArgsConstructor;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -21,22 +21,22 @@ public class ProductService {
 
     private final ProductMapper mapper;
     private final CategoryService categoryService;
+    private final StockService stockService;
 
     @Transactional(Transactional.TxType.NEVER)
     public List<ProductResponse> findAll() {
-        final List<Product> products = Product.listAll();
-
-        if (products.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        return products.stream().map(mapper::toResponse).collect(Collectors.toList());
+        return Product.listAll().stream()
+                .map(p -> (Product) p)
+                .map(mapper::toResponse).collect(Collectors.toList());
     }
 
     @Transactional(Transactional.TxType.NEVER)
     public ProductResponse findByCode(final String code) {
-        final Product product = (Product) Product.find("code", code);
-        return mapper.toResponse(product);
+        return Product.find("code", code)
+                .firstResultOptional()
+                .map(p -> (Product) p)
+                .map(mapper::toResponse)
+                .orElseThrow(() -> new ProductException("product not found, code: " + code));
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
@@ -48,15 +48,21 @@ public class ProductService {
                     Product.persist(p);
                     return p;
                 })
+                .map(p -> {
+                    stockService.publisher(request, p.code);
+                    return p;
+                })
                 .orElseThrow(() -> new RuntimeException("Fail to save product: " + request));
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
     public void update(final ProductRequest request, final String code) {
-        final Product product = (Product) Product.find("code", code);
-        of(product)
+        Product.find("code", code)
+                .firstResultOptional()
+                .map(p -> (Product) p)
                 .map(p -> {
                     p.description = request.getDescription();
+                    p.category = categoryService.findByDescription(request.getCategory());
                     p.price = request.getPrice();
                     Product.persist(p);
                     return p;
@@ -67,7 +73,6 @@ public class ProductService {
 
     @Transactional(Transactional.TxType.REQUIRED)
     public void delete(final String code) {
-        final Product product = (Product) Product.find("code", code);
-        Product.deleteById(product.id);
+        Product.delete("code", code);
     }
 }
