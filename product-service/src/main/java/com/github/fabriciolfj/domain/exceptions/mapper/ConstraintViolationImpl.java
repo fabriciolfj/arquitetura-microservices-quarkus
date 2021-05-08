@@ -1,4 +1,4 @@
-package com.github.fabriciolfj.infra;
+package com.github.fabriciolfj.domain.exceptions.mapper;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
