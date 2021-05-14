@@ -1,6 +1,5 @@
 package com.github.fabriciolfj.domain.service;
 
-import com.github.fabriciolfj.api.category.mapper.CategoryMapper;
 import com.github.fabriciolfj.domain.entity.Category;
 import com.github.fabriciolfj.domain.exceptions.CategoryException;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +13,6 @@ import java.util.List;
 @ApplicationScoped
 @RequiredArgsConstructor
 public class CategoryService {
-
-    private final CategoryMapper mapper;
 
     @Transactional(Transactional.TxType.REQUIRED)
     public void save(final Category category) {

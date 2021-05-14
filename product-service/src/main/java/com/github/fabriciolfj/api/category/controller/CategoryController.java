@@ -18,7 +18,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.util.Optional.of;
 
 @Slf4j
 @Path("categories")
@@ -47,9 +50,14 @@ public class CategoryController {
 
     @POST
     public Response create(@Valid final CategoryRequest request) {
-        final var category = categoryMapper.toEntity(request);
-        log.info("Category created: {}", category);
-        categoryService.save(category);
-        return Response.status(201).build();
+        return of(categoryMapper.toEntity(request))
+                .map(c -> {
+                    categoryService.save(c);
+                    return c;
+                }).map(c -> {
+                    log.info("Category created: {}", c);
+                    return Response.status(201).build();
+                })
+                .get();
     }
 }

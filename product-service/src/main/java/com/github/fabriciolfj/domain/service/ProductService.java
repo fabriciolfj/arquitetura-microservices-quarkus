@@ -5,7 +5,9 @@ import com.github.fabriciolfj.api.product.dto.ProductResponse;
 import com.github.fabriciolfj.api.product.mapper.ProductMapper;
 import com.github.fabriciolfj.domain.entity.Product;
 import com.github.fabriciolfj.domain.exceptions.ProductException;
+import com.github.fabriciolfj.domain.integration.http.StockHttp;
 import lombok.RequiredArgsConstructor;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
@@ -36,6 +38,10 @@ public class ProductService {
                 .firstResultOptional()
                 .map(p -> (Product) p)
                 .map(mapper::toResponse)
+                .map(p -> {
+                    p.setStock( stockService.getStock(p.getCode()));
+                    return p;
+                })
                 .orElseThrow(() -> new ProductException("product not found, code: " + code));
     }
 
@@ -52,7 +58,7 @@ public class ProductService {
                     stockService.publisher(request, p.code);
                     return p;
                 })
-                .orElseThrow(() -> new RuntimeException("Fail to save product: " + request));
+                .orElseThrow(() -> new ProductException("Fail to save product: " + request));
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
@@ -67,7 +73,7 @@ public class ProductService {
                     Product.persist(p);
                     return p;
                 })
-                .orElseThrow(() -> new RuntimeException("Fail to update product: " + code));
+                .orElseThrow(() -> new ProductException("Fail to update product: " + code));
 
     }
 

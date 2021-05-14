@@ -12,6 +12,7 @@ public interface ProductMapper {
     @Mapping(target = "price", source = "price")
     @Mapping(target = "description", source = "description")
     @Mapping(target = "code", source = "code")
+    @Mapping(target = "stock", ignore = true)
     ProductResponse toResponse(final Product product);
 
     @Mapping(target = "price", source = "price")

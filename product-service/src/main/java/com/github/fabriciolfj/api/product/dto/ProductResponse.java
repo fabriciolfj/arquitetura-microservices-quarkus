@@ -10,4 +10,5 @@ public class ProductResponse {
     private String description;
     private BigDecimal price;
     private String code;
+    private Integer stock;
 }
