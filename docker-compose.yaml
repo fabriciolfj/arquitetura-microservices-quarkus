@@ -1,13 +1,21 @@
 version: "3.3"
 services:
-  postgres_cadastro:
-    container_name: postgres_customer
+  postgres_produto:
     image: debezium/example-postgres
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
     ports:
       - "5432:5432"
+
+  postgres_stock:
+    image: debezium/example-postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5433:5432"
+
   kafka:
     image: debezium/kafka:1.1
     ports:
