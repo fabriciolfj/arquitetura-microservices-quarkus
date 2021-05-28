@@ -33,6 +33,6 @@ public class StockService {
 
     public Integer getStock(final String code) {
         final StockResponse stock = stockHttp.getStock(code);
-        return stock.getStock();
+        return stock.getBalance();
     }
 }
