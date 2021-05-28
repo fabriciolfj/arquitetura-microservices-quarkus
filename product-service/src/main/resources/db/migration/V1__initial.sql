@@ -1,5 +1,6 @@
 create sequence productId_seq start 1;
 create sequence categoryId_seq start 1;
+create sequence operationId_seq start 1;
 
 create table category (
     id int,
@@ -18,3 +19,13 @@ create table product (
     primary key (id),
     foreign key (category_id) references category (id)
 );
+
+create table operation (
+    id int,
+    type varchar(30) not null,
+    qtde int not null,
+    product_id int not null,
+    date_move timestamp not null,
+    primary key (id),
+    foreign key(product_id) references product (id)
+)

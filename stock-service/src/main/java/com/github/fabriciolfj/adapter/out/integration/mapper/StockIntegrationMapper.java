@@ -1,7 +1,7 @@
-package com.github.fabriciolfj.core.integration.mapper;
+package com.github.fabriciolfj.adapter.out.integration.mapper;
 
 import com.github.fabriciolfj.core.entity.Stock;
-import com.github.fabriciolfj.core.integration.dto.StockMessage;
+import com.github.fabriciolfj.adapter.out.integration.dto.StockMessage;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.time.LocalDateTime;

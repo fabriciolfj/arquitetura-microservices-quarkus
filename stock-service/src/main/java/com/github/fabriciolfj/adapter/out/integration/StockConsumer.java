@@ -1,7 +1,7 @@
-package com.github.fabriciolfj.core.integration;
+package com.github.fabriciolfj.adapter.out.integration;
 
-import com.github.fabriciolfj.core.integration.dto.StockMessage;
-import com.github.fabriciolfj.core.integration.mapper.StockIntegrationMapper;
+import com.github.fabriciolfj.adapter.out.integration.dto.StockMessage;
+import com.github.fabriciolfj.adapter.out.integration.mapper.StockIntegrationMapper;
 import com.github.fabriciolfj.core.service.StockService;
 import io.smallrye.reactive.messaging.annotations.Blocking;
 import lombok.extern.slf4j.Slf4j;

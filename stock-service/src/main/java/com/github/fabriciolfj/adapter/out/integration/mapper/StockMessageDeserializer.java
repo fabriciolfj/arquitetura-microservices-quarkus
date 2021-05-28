@@ -1,6 +1,6 @@
-package com.github.fabriciolfj.core.integration.mapper;
+package com.github.fabriciolfj.adapter.out.integration.mapper;
 
-import com.github.fabriciolfj.core.integration.dto.StockMessage;
+import com.github.fabriciolfj.adapter.out.integration.dto.StockMessage;
 import io.quarkus.kafka.client.serialization.ObjectMapperDeserializer;
 
 public class StockMessageDeserializer extends ObjectMapperDeserializer<StockMessage> {

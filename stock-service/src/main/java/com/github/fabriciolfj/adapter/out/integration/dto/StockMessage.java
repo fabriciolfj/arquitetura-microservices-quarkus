@@ -1,4 +1,4 @@
-package com.github.fabriciolfj.core.integration.dto;
+package com.github.fabriciolfj.adapter.out.integration.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
