@@ -7,3 +7,10 @@
 ``` 
 mvn clean package -Dquarkus.container-image.build=true -Dquarkus.kubernetes.deploy=true -Dquarkus.container-image.push=true
 ``` 
+## Stacks
+- Observabilidade
+- Comuinicação sincrona e assíncrona entre os serviços
+- Gateway
+- Discovery services
+- Configuração externalizada
+- Ambiente kubernetes
