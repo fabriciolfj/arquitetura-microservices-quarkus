@@ -5,11 +5,9 @@ import com.github.fabriciolfj.api.product.dto.ProductResponse;
 import com.github.fabriciolfj.api.product.mapper.ProductMapper;
 import com.github.fabriciolfj.domain.entity.Product;
 import com.github.fabriciolfj.domain.exceptions.ProductException;
-import com.github.fabriciolfj.domain.integration.http.StockHttp;
-import lombok.RequiredArgsConstructor;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
@@ -17,22 +15,21 @@ import java.util.stream.Collectors;
 
 import static java.util.Optional.of;
 
-@RequiredArgsConstructor
 @ApplicationScoped
 public class ProductService {
 
-    private final ProductMapper mapper;
-    private final CategoryService categoryService;
-    private final StockService stockService;
+    @Inject ProductMapper mapper;
+    @Inject CategoryService categoryService;
+    @Inject StockService stockService;
 
-    @Transactional(Transactional.TxType.NEVER)
+    @Transactional(Transactional.TxType.NOT_SUPPORTED)
     public List<ProductResponse> findAll() {
         return Product.listAll().stream()
                 .map(p -> (Product) p)
                 .map(mapper::toResponse).collect(Collectors.toList());
     }
 
-    @Transactional(Transactional.TxType.NEVER)
+    @Transactional(Transactional.TxType.NOT_SUPPORTED)
     public ProductResponse findByCode(final String code) {
         return Product.find("code", code)
                 .firstResultOptional()
@@ -67,9 +64,8 @@ public class ProductService {
                 .firstResultOptional()
                 .map(p -> (Product) p)
                 .map(p -> {
-                    p.description = request.getDescription();
+                    mapper.update(request, p);
                     p.category = categoryService.findByDescription(request.getCategory());
-                    p.price = request.getPrice();
                     Product.persist(p);
                     return p;
                 })

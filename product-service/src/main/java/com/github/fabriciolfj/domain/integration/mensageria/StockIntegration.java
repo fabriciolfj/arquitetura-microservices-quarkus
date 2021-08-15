@@ -14,7 +14,7 @@ public class StockIntegration {
 
     @Inject
     @Channel("product")
-    private Emitter<StockRequest> emitter;
+    Emitter<StockRequest> emitter;
 
     public void send(final StockRequest stockRequest) {
         log.info("Send to stock: {}", stockRequest);

@@ -5,6 +5,7 @@ import com.github.fabriciolfj.api.product.dto.ProductResponse;
 import com.github.fabriciolfj.domain.entity.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "cdi")
 public interface ProductMapper {
@@ -21,4 +22,7 @@ public interface ProductMapper {
     @Mapping(target = "code", ignore = true)
     @Mapping(target = "category", ignore = true)
     Product toEntity(final ProductRequest request);
+
+    @Mapping(target = "category", ignore = true)
+    void update(final ProductRequest request, @MappingTarget final Product product);
 }

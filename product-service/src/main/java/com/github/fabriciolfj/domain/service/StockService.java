@@ -17,12 +17,12 @@ import javax.inject.Inject;
 public class StockService {
 
     @Inject
-    private StockMapper stockMapper;
+    StockMapper stockMapper;
     @Inject
-    private StockIntegration stockIntegration;
+    StockIntegration stockIntegration;
     @RestClient
     @Inject
-    private StockHttp stockHttp;
+    StockHttp stockHttp;
 
     public void publisher(final ProductRequest request, final String code) {
         final var stock = stockMapper.toRequest(request, code);

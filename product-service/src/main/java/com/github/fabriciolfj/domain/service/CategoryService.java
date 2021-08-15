@@ -19,7 +19,6 @@ public class CategoryService {
         Category.persist(category);
     }
 
-    @Transactional(Transactional.TxType.REQUIRED)
     public Category findByDescription(final String description) {
         return Category.find("description", description)
                 .firstResultOptional()
