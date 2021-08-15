@@ -5,16 +5,20 @@ import com.github.fabriciolfj.api.product.dto.ProductResponse;
 import com.github.fabriciolfj.api.product.mapper.ProductMapper;
 import com.github.fabriciolfj.domain.entity.Product;
 import com.github.fabriciolfj.domain.exceptions.ProductException;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.util.Optional.of;
+import static java.util.concurrent.CompletableFuture.runAsync;
 
+@Slf4j
 @ApplicationScoped
 public class ProductService {
 
@@ -48,14 +52,27 @@ public class ProductService {
                 .map(p -> {
                     p.category = categoryService.findByDescription(decription);
                     p.code = UUID.randomUUID().toString();
-                    Product.persist(p);
+                    save(p);
                     return p;
                 })
                 .map(p -> {
-                    stockService.publisher(request, p.code);
+                    runAsync(() -> stockService.publisher(request, p.code))
+                            .whenComplete((r, e) -> {
+                                if (!Objects.isNull(e)) {
+                                    throw new ProductException("Fail set stock: " + e.getMessage());
+                                }
+                            });
                     return p;
                 })
                 .orElseThrow(() -> new ProductException("Fail to save product: " + request));
+    }
+
+    private void save(Product p) {
+        try {
+            Product.persist(p);
+        } catch (Exception e) {
+            throw new ProductException("fail commit, cause: " + e.getCause());
+        }
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
@@ -66,7 +83,7 @@ public class ProductService {
                 .map(p -> {
                     mapper.update(request, p);
                     p.category = categoryService.findByDescription(request.getCategory());
-                    Product.persist(p);
+                    save(p);
                     return p;
                 })
                 .orElseThrow(() -> new ProductException("Fail to update product: " + code));
